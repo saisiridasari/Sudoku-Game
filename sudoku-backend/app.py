@@ -12,12 +12,16 @@ app = Flask(__name__)
 # Configure CORS properly for production
 CORS(app, resources={r"/api/*": {"origins": "*"}})
 
-
-# MongoDB connection with error handling
+# MongoDB connection with error handling and SSL fix
 MONGODB_URI = os.getenv('MONGODB_URI', 'mongodb://localhost:27017/')
 
 try:
-    client = MongoClient(MONGODB_URI, serverSelectionTimeoutMS=5000)
+    client = MongoClient(
+        MONGODB_URI,
+        serverSelectionTimeoutMS=5000,
+        tls=True,
+        tlsAllowInvalidCertificates=True
+    )
     # Test connection
     client.server_info()
     db = client['sudoku_db']
